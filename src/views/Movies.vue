@@ -10,8 +10,7 @@ const moviesByGenres = await getMoviesByGenres();
 const router = useRouter();
 
 const searchMovies = (q) => {
-  movieRef.query.value = q;
-  router.replace({ name: "moviescategory" });
+  router.replace({ name: "moviescategory", query: { q: q } });
 };
 </script>
 
@@ -26,6 +25,7 @@ const searchMovies = (q) => {
       <router-link
         class="bg-transparent border-none"
         :to="{ name: 'moviescategory', query: { category: genre.id } }"
+        @click="movieRef.query.value = null"
       >
         <v-icon name="bi-plus-circle" scale="1.2" />
       </router-link>
