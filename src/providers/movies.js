@@ -6,7 +6,7 @@ export default class MovieProvider{
     constructor(){
         this.page = ref(1)
         this.totalPages = ref(0)
-        this.query = ref('')
+        this.query = ref(null)
         this.movies= ref([])
         this.movie = ref(null)
     }
@@ -17,6 +17,7 @@ export default class MovieProvider{
             const json = await response.json()
             this.movies.value = json.results
             this.totalPages.value = 500
+            return json
         }catch(e){
             console.log(e)
         }
@@ -32,13 +33,11 @@ export default class MovieProvider{
         }
     }
 
-    async filterMoviesByName(page, name){
+    async filterMoviesByName(name){
         try{
-            const response = await fetch(`https://api.themoviedb.org/3/search/movie?query=${name}&api_key=${API_KEY}&page=${page}`)
+            const response = await fetch(`https://api.themoviedb.org/3/search/movie?query=${name}&api_key=${API_KEY}`)
             const json = await response.json()
-            this.movies.value = json.results
-            this.totalPages.value = json.total_pages
-            console.log("Evento emitido")
+            return json
         }catch(e){
             console.log(e)
         }
