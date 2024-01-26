@@ -17,7 +17,7 @@ const onSearched = async (val) => {
 };
 
 onMounted(async () => {
-  if (route.query.q) await onSearched();
+  if (route.query.q) movies.value = await onSearched(route.query.q);
   else if (route.query.category)
     movies.value = await getByCategory(route.query.category);
 });
