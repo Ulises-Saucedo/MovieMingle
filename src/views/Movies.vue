@@ -1,79 +1,69 @@
 <script setup>
-    import { ref } from 'vue'
-    import Header from '../components/Header.vue';
-    import MovieProvider from '../providers/movies.js'
+import { useRouter } from "vue-router";
+import Header from "../components/Header.vue";
+import MovieProvider from "../providers/movies";
+import { getMoviesGenres, getMoviesByGenres } from "../helpers/moviesHelpers";
 
-    const loading = ref(false)
-    const moviesRef = new MovieProvider()
-    const movies = moviesRef.movies
+const movieRef = new MovieProvider();
+const genres = await getMoviesGenres();
+const moviesByGenres = await getMoviesByGenres();
+const router = useRouter();
 
-    const onClickHandler = async (page) => {
-        loading.value = true
-        if(moviesRef.query.value == ''){
-            await moviesRef.getMoviesPage(page)
-        }else{
-            moviesRef.page.value += page
-            await moviesRef.filterMoviesByName(page, moviesRef.query.value)
-        }
-        loading.value = false
-    }
-
-    const searchMovies = async (query) =>{
-        loading.value = true
-        if(query == ''){
-            await moviesRef.getMovies()
-        }else{
-            moviesRef.page.value = 1
-            moviesRef.query.value = query
-            await moviesRef.filterMoviesByName(moviesRef.page.value, query)
-        }
-        loading.value = false
-    }
-
-    await moviesRef.getMovies()
+const searchMovies = (q) => {
+  movieRef.query.value = q;
+  router.replace({ name: "moviescategory" });
+};
 </script>
 
 <template>
-    <Header @onSearch="searchMovies"/>
-    <section v-if="!loading">
-        <section class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 p-4 gap-4 max-w-[1000px] mx-auto">
-            <div v-for="movie in movies" class="rounded overflow-hidden">
-                <router-link :to="{name: 'movie', params:{ id: movie.id }}">
-                    <img 
-                        :src="`https://image.tmdb.org/t/p/original/${movie.poster_path}`" 
-                        :alt="movie.title"
-                        class="h-full"
-                    >
-                </router-link>
-            </div>
-        </section>
-    </section>
-    <section v-else class="h-screen w-full flex items-center justify-center">
-        <p>Cargando...</p>
-    </section>
-    <section class="flex justify-center p-4" v-if="movies.length > 0">
-        <vue-awesome-paginate
-            :total-items="moviesRef.totalPages.value * 20"
-            :items-per-page="20"
-            :max-pages-shown="5"
-            v-model="moviesRef.page.value"
-            :on-click="onClickHandler"
-            paginate-buttons-class="btn-paginate"
-        />
-    </section>
-    <section v-else class="flex items-center justify-center font-bold w-full h-screen text-xl">
-        Sorry ;(, Sorry, try another search.
-    </section>
+  <Header @onSearch="searchMovies" />
+  <section
+    v-for="(genre, i) in genres.genres"
+    class="p-4 bg-[#131315] mx-4 mt-20 rounded"
+  >
+    <p class="font-bold text-[#fff] flex w-full justify-between">
+      {{ genre.name }}
+      <router-link
+        class="bg-transparent border-none"
+        :to="{ name: 'moviescategory', query: { category: genre.id } }"
+      >
+        <v-icon name="bi-plus-circle" scale="1.2" />
+      </router-link>
+    </p>
+    <div class="flex overflow-x-auto gap-4 h-[300px] items-center scrollbar">
+      <div
+        v-for="movie in moviesByGenres[i].results"
+        class="h-[200px] min-w-[150px] rounded overflow-hidden"
+      >
+        <router-link :to="{ name: 'movie', params: { id: movie.id } }">
+          <img
+            :src="`https://image.tmdb.org/t/p/original/${movie.poster_path}`"
+            :alt="movie.title"
+            class="h-full w-full object-cover"
+          />
+        </router-link>
+      </div>
+    </div>
+  </section>
 </template>
 
 <style>
-    .btn-paginate{
-        height: 40px;
-        width: 40px;
-        border: none;
-        border-radius: 5px;
-        margin-inline: 5px;
-        cursor: pointer;
-        background: #C03F28
-    }
+.scrollbar {
+  --sb-track-color: #09090b;
+  --sb-thumb-color: #131315;
+  --sb-size: 11px;
+  scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
+}
+.scrollbar::-webkit-scrollbar {
+  width: var(--sb-size);
+}
+.scrollbar::-webkit-scrollbar-track {
+  background: var(--sb-track-color);
+  border-radius: 11px;
+}
+.scrollbar::-webkit-scrollbar-thumb {
+  background: var(--sb-thumb-color);
+  border-radius: 11px;
+  border: 1px solid #3e3e3e;
+}
 </style>
