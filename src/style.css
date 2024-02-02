@@ -2,8 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-body{
-    width: 100%;
-    min-height: 100vh;
-    background: #09090B;
+body {
+  background: #242335;
+  width: 100%;
+  min-height: 100vh;
 }
