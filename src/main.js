@@ -6,4 +6,4 @@ import { OhVueIcon, addIcons } from "oh-vue-icons";
 import { BiPlusCircle } from "oh-vue-icons/icons";
 addIcons(BiPlusCircle);
 
-createApp(App).use(router).use(VueAwesomePaginate).component("v-icon", OhVueIcon).mount('#app')
+createApp(App).use(router).component("v-icon", OhVueIcon).mount('#app')
