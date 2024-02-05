@@ -34,5 +34,30 @@ export const useMovies = defineStore("movies", {
         }
       }
     },
+    async getMoviesByQuery(q) {
+      this.current_page = 1;
+      try {
+        const response = await fetch(
+          `https://api.themoviedb.org/3/search/movie?query=${q}&api_key=${API_KEY}`
+        );
+        const { results } = await response.json();
+        this.movies = results;
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    async getMoviesByGenre(genre) {
+      this.current_page = 1;
+      try {
+        const response = await fetch(
+          `
+          https://api.themoviedb.org/3/discover/movie?with_genres=${genre}&api_key=${API_KEY}`
+        );
+        const { results } = await response.json();
+        this.movies = results;
+      } catch (e) {
+        console.log(e);
+      }
+    },
   },
 });
