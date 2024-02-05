@@ -1,11 +1,13 @@
 <script setup>
 import { ref } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import TrendingSection from "./TrendingSection.vue";
 import { getUrl, getGenres } from "../helpers/moviesHelpers";
 import { useMovies } from "../store/moviesStore";
 
+const router = useRouter();
 const route = useRoute();
+const searched = ref("");
 const scrollComponent = ref(null);
 const store = useMovies();
 const genres = await getGenres();
@@ -16,6 +18,10 @@ const handleScroll = async () => {
   if (element.getBoundingClientRect().bottom <= threshold) {
     await store.loadMoreData(getUrl(route.path));
   }
+};
+
+const handleInput = () => {
+  router.push({ name: "moviescategory", query: { category: searched.value } });
 };
 
 window.addEventListener("scroll", handleScroll);
@@ -39,6 +45,8 @@ await store.getTrendingMovies(1);
         type="text"
         class="py-1 px-3 z-30 rounded-2xl font-normal bg-[#242335] text-[#fff] border-[1px] border-solid border-slate-600 focus:outline-1 focus:outline-double focus:outline-slate-500 placeholder:italic placeholder:text-slate-600"
         placeholder="Search..."
+        v-model="searched"
+        @keyup.enter="handleInput"
       />
     </div>
   </div>
