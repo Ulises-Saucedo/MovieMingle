@@ -18,7 +18,7 @@ const { trending, genres } = props;
     <router-link
       v-for="genre in genres"
       class="py-1 px-5 bg-[#424167] border-[#919ac9] border-[1px] border-solid rounded-3xl hover:scale-110 cursor-pointer duration-300 ease-in-out text-[#fff]"
-      to="#"
+      :to="{ name: 'moviescategory', query: { category: genre.id } }"
       >{{ genre.name }}</router-link
     >
   </section>
@@ -33,11 +33,13 @@ const { trending, genres } = props;
       :key="i"
       class="overflow-hidden rounded-md"
     >
-      <img
-        :src="`https://image.tmdb.org/t/p/w400${movie.poster_path}`"
-        :alt="movie.title"
-        class="duration-300 ease-in-out scale-125 cursor-pointer hover:scale-100"
-      />
+      <router-link :to="{ name: 'movie', params: { id: movie.id } }">
+        <img
+          :src="`https://image.tmdb.org/t/p/w400${movie.poster_path}`"
+          :alt="movie.title"
+          class="duration-300 ease-in-out scale-125 cursor-pointer hover:scale-100"
+        />
+      </router-link>
     </div>
   </section>
 </template>
