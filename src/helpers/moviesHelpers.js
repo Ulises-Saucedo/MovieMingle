@@ -27,6 +27,18 @@ export const getGenres = async () => {
   }
 };
 
+export const getMovie = async (id) => {
+  try {
+    const response = await fetch(
+      `https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}`
+    );
+    const movie = await response.json();
+    return movie;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 export const verifyQueries = async (route) => {
   if (route.query.category) {
     await store.getMoviesByGenre(route.query.category);
