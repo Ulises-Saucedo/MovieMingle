@@ -21,7 +21,7 @@ const handleScroll = async () => {
 };
 
 const handleInput = () => {
-  router.push({ name: "moviescategory", query: { category: searched.value } });
+  router.push({ name: "moviescategory", query: { q: searched.value } });
 };
 
 window.addEventListener("scroll", handleScroll);
